@@ -6,14 +6,17 @@
 		{
 			Console.WriteLine("Input s or c for server or client respectively.");
 			string text = "";
-			while (text != "s" || text != "c" || text != "exit");
+			do
+			{
+				text = Console.ReadLine();
+			} while (text != "s" && text != "c" && text != "exit");
 			switch (text)
 			{
 				case "s":
 					new Server().Launch();
 					break;
 				case "c":
-					new Server().Launch();
+					new Client().Launch();
 					break;
 				default:
 				case "exit":
