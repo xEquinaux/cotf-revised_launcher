@@ -68,9 +68,10 @@ public class PacketManager
         Packet packet = new Packet();
 
         packet.Id = BitConverter.ToInt32(data, 0);
+        packet.FromWhom = BitConverter.ToInt32(data, 4);
         
-        packet.Data = new byte[received - 4];
-        Array.Copy(data, 4, packet.Data, 0, received - 4);
+        packet.Data = new byte[received - 8];
+        Array.Copy(data, 8, packet.Data, 0, received - 8);
 
         return packet;
     }

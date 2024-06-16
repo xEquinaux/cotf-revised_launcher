@@ -5,6 +5,7 @@ using System.Threading;
 
 public class ChatClient
 {
+	public  TcpClient Client { get { return _client; } }
 	private TcpClient _client;
 	private NetworkStream _stream;
 

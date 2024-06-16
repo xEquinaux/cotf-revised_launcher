@@ -5,6 +5,7 @@ using System.Text;
 
 public class ChatServer
 {
+	public Dictionary<TcpClient, NetworkStream> Client => _clients;
 	private TcpListener _server;
 	private Dictionary<TcpClient, NetworkStream> _clients = new Dictionary<TcpClient, NetworkStream>();
 
