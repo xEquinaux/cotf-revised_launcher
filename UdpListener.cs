@@ -5,15 +5,15 @@ using System.Text;
 
 public class UdpListener
 {
-    private UdpClient udpClient;
-    private IPEndPoint endPoint;
-    private BinaryReader read;
+    private UdpClient     udpClient;
+    private IPEndPoint    endPoint;
+    private BinaryReader  read;
     private IList<Socket> _client = new List<Socket>();
 
     public UdpListener(int port)
     {
-        udpClient = new UdpClient(port);
-        endPoint = new IPEndPoint(IPAddress.Any, port);
+        udpClient = new UdpClient (port);
+        endPoint  = new IPEndPoint(IPAddress.Any, port);
     }
 
     public void StartListening(bool printMessages)
@@ -24,7 +24,7 @@ public class UdpListener
             {
                 byte[] data = udpClient.Receive(ref endPoint);
                 if (printMessages)
-                { 
+                {
                     string message = Encoding.UTF8.GetString(data);
                     Console.WriteLine($"Received message: {message}");
                 }
