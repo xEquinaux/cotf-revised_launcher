@@ -5,21 +5,21 @@ using System.Threading;
 
 public class ChatClient
 {
-	public  TcpClient Client { get { return _client; } }
-	private TcpClient _client;
+	public int whoAmI { get; set; }
+	private UdpClient _client;
 	private NetworkStream _stream;
+	private UdpListener _listener;
 
 	public ChatClient(string ip, int port)
 	{
-		_client = new TcpClient(ip, port);
-		_stream = _client.GetStream();
+		_client = (_listener = new UdpListener(8000)).StartListening(false);
 		Console.WriteLine("Connected to server on " + ip + ":" + port);
 	}
 
 	public void StartChat()
 	{
-		Thread thread = new Thread(() => ReceiveMessages());
-		thread.Start();
+		new Thread(() => ReceiveMessages()).Start();
+		new Thread(() => ReceiveData()).Start();
 
 		while (true)
 		{
@@ -27,6 +27,11 @@ public class ChatClient
 			byte[] buffer = Encoding.UTF8.GetBytes(message);
 			_stream.Write(buffer, 0, buffer.Length);
 		}
+	}
+
+	private void ReceiveData()
+	{
+		_listener.StartListening();
 	}
 
 	private void ReceiveMessages()

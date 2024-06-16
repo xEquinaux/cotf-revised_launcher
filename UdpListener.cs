@@ -5,14 +5,13 @@ using System.Text;
 
 public class UdpListener
 {
-    public int whoAmI { get; set; } 
     private UdpClient udpClient;
     private IPEndPoint endPoint;
 
     public UdpListener(int port)
     {
-        udpClient = new UdpClient(port);
-        endPoint = new IPEndPoint(IPAddress.Any, port);
+        udpClient = new UdpClient(0);
+        endPoint = new IPEndPoint(IPAddress.Any, 0);
     }
 
     public void StartListening()
@@ -34,5 +33,27 @@ public class UdpListener
         {
             udpClient.Close();
         }
+    }
+
+    public UdpClient StartListening(bool displayErrors)
+    {
+        try
+        {
+            while (true)
+            {
+                udpClient.Receive(ref endPoint);
+                return udpClient;
+            }
+        }
+        catch (SocketException ex)
+        {
+            if (displayErrors)
+            Console.WriteLine($"SocketException: {ex}");
+        }
+        finally
+        {
+            udpClient.Close();
+        }
+        return null;
     }
 }

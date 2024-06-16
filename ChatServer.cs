@@ -5,14 +5,13 @@ using System.Text;
 
 public class ChatServer
 {
-	public Dictionary<TcpClient, NetworkStream> Client => _clients;
-	private TcpListener _server;
-	private Dictionary<TcpClient, NetworkStream> _clients = new Dictionary<TcpClient, NetworkStream>();
+	public Dictionary<UdpClient, NetworkStream> Client => _clients;
+	private UdpListener _server;
+	private Dictionary<UdpClient, NetworkStream> _clients = new Dictionary<UdpClient, NetworkStream>();
 
 	public ChatServer(string ip, int port)
 	{
-		_server = new TcpListener(IPAddress.Parse(ip), port);
-		_server.Start();
+		_server = new UdpListener(8000);
 		Console.WriteLine("Server started on " + ip + ":" + port);
 	}
 
@@ -20,16 +19,19 @@ public class ChatServer
 	{
 		while (true)
 		{
-			TcpClient client = _server.AcceptTcpClient();
-			NetworkStream stream = client.GetStream();
-			_clients.Add(client, stream);
+			UdpClient client = _server.StartListening(false);
+			if (client != null)
+			{ 
+				NetworkStream stream = new NetworkStream(client.Client);
+				_clients.Add(client, stream);
 
-			Thread thread = new Thread(() => HandleClient(client, stream));
-			thread.Start();
+				Thread thread = new Thread(() => HandleClient(client, stream));
+				thread.Start();
+			}
 		}
 	}
 
-	private void HandleClient(TcpClient client, NetworkStream stream)
+	private void HandleClient(UdpClient client, NetworkStream stream)
 	{
 		byte[] buffer = new byte[1024];
 		while (true)

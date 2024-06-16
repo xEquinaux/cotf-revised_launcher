@@ -4,10 +4,12 @@ using System.Net.Sockets;
 
 public class PacketManager
 {
+    public static PacketManager Instance { get; set; }
     private Dictionary<int, Action<Packet>> packetHandlers;
 
     public PacketManager()
     {
+        Instance = this;
         packetHandlers = new Dictionary<int, Action<Packet>>();
     }
 
@@ -47,15 +49,15 @@ public class PacketManager
         }
     }
 
-    public void SendPacket(Socket socket, Packet packet)
+    public void SendPacket(UdpClient socket, Packet packet)
     {
         socket.Send(packet.GetBytes());
     }
 
-    public Packet ReceivePacket(Socket socket)
+    public Packet ReceivePacket(UdpClient socket)
     {
         byte[] buffer = new byte[1024];
-        int received = socket.Receive(buffer, SocketFlags.None);
+        int received = socket.Client.Receive(buffer, SocketFlags.None);
 
         if (received == 0)
         {
