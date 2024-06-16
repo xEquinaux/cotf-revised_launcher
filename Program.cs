@@ -10,15 +10,7 @@
 		} while (text != "s" && text != "c" && text != "exit");
 		switch (text)
 		{
-			case "s":
-				new Server().Launch();
-				break;
-			case "c":
-				new Client().Launch();
-				break;
-			default:
-			case "exit":
-				break;
+			
 		}
 	}
 }

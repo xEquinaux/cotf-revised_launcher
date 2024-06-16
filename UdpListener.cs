@@ -7,53 +7,37 @@ public class UdpListener
 {
     private UdpClient udpClient;
     private IPEndPoint endPoint;
+    private BinaryReader read;
+    private IList<Socket> _client = new List<Socket>();
 
     public UdpListener(int port)
     {
-        udpClient = new UdpClient(0);
-        endPoint = new IPEndPoint(IPAddress.Any, 0);
+        udpClient = new UdpClient(port);
+        endPoint = new IPEndPoint(IPAddress.Any, port);
     }
 
-    public void StartListening()
+    public void StartListening(bool printMessages)
     {
         try
         {
             while (true)
             {
                 byte[] data = udpClient.Receive(ref endPoint);
-                string message = Encoding.UTF8.GetString(data);
-                Console.WriteLine($"Received message: {message}");
+                if (printMessages)
+                { 
+                    string message = Encoding.UTF8.GetString(data);
+                    Console.WriteLine($"Received message: {message}");
+                }
             }
         }
         catch (SocketException ex)
         {
+            if (printMessages)
             Console.WriteLine($"SocketException: {ex}");
         }
         finally
         {
             udpClient.Close();
         }
-    }
-
-    public UdpClient StartListening(bool displayErrors)
-    {
-        try
-        {
-            while (true)
-            {
-                udpClient.Receive(ref endPoint);
-                return udpClient;
-            }
-        }
-        catch (SocketException ex)
-        {
-            if (displayErrors)
-            Console.WriteLine($"SocketException: {ex}");
-        }
-        finally
-        {
-            udpClient.Close();
-        }
-        return null;
     }
 }
