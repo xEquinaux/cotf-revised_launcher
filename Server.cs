@@ -35,7 +35,12 @@ public class ChatServer
         byte[] buffer = new byte[1024];
         while (true)
         {
-            int bytesRead = stream.Read(buffer, 0, buffer.Length);
+            int bytesRead = 0;
+            try
+            { 
+                bytesRead = stream.Read(buffer, 0, buffer.Length);
+            }
+            catch { Console.WriteLine($"Client disconnected."); return; }
             if (bytesRead == 0)
             {
                 // Client disconnected
