@@ -49,7 +49,7 @@ public class PacketManager
         }
     }
 
-    public void SendPacket(UdpClient socket, Packet packet)
+    public static void SendPacket(Socket socket, Packet packet)
     {
         socket.Send(packet.GetBytes());
     }
@@ -75,6 +75,8 @@ public class PacketManager
         
         packet.Data = new byte[received - 12];
         Array.Copy(data, 12, packet.Data, 0, received - 12);
+
+        HandleIncomingPacket(packet);
 
         return packet;
     }

@@ -5,10 +5,10 @@ using System.Text;
 
 public class UdpListener
 {
-    private UdpClient     udpClient;
-    private IPEndPoint    endPoint;
-    private BinaryReader  read;
-    private IList<Socket> _client = new List<Socket>();
+    private UdpClient        udpClient;
+    private IPEndPoint       endPoint;
+    private BinaryReader     read;
+    public static IList<Socket>    _client = new List<Socket>();
 
     public UdpListener(int port)
     {
@@ -18,26 +18,31 @@ public class UdpListener
 
     public void StartListening(bool printMessages)
     {
-        try
+        while (true)
         {
-            while (true)
-            {
+            try
+            { 
                 byte[] data = udpClient.Receive(ref endPoint);
+                if (_client.Contains(udpClient.Client))
+                {
+                    _client.Add(udpClient.Client);
+                }
+                PacketManager.Instance.ReceivePacket(udpClient);
                 if (printMessages)
                 {
                     string message = Encoding.UTF8.GetString(data);
                     Console.WriteLine($"Received message: {message}");
                 }
             }
-        }
-        catch (SocketException ex)
-        {
-            if (printMessages)
-            Console.WriteLine($"SocketException: {ex}");
-        }
-        finally
-        {
-            udpClient.Close();
+            catch 
+            {    
+                if (printMessages)
+                {
+                    _client.Remove(udpClient.Client);
+                    Console.WriteLine($"Client disconnected.");
+                }
+                continue; 
+            }
         }
     }
 }

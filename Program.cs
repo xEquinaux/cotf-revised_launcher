@@ -3,6 +3,8 @@
 	static void Main(string[] args)
 	{
 		Console.WriteLine("Input s or c for server or client respectively.");
+		new PacketManager();
+		new PacketHandler();
 		string text = "";
 		do
 		{
@@ -14,7 +16,8 @@
 				new UdpListener(8000).StartListening(true);
 				break;
 			case "c":
-				new Client().Launch();
+				Console.Write("Enter IP address for connection: ");
+				new Client().Launch(Console.ReadLine());
 				break;
 			case "exit":
 				Environment.Exit(0);

@@ -23,4 +23,8 @@ public class Packet
                  .Zip(Data);
         return buffer;
     }
+	public override string ToString()
+	{
+		return $"Packet:{Id} To:{ToWhom} From:{FromWhom}";
+	}
 }

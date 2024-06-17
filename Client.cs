@@ -1,10 +1,11 @@
-﻿using System.Net.Sockets;
+﻿using System.Net;
+using System.Net.Sockets;
 
 public class Client
 {
-	public void Launch()
+	public void Launch(string ip)
 	{
-		ChatClient client = new ChatClient("127.0.0.1", 8000);
+		ChatClient client = new ChatClient(ip, 8000);
 		client.StartChat();
 	}
 }
