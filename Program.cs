@@ -1,10 +1,14 @@
-﻿public class Program
+﻿using CirclePrefect.Dotnet;
+using System.Net.Sockets;
+using System.Net;
+using System.Text;
+
+public class Program
 {
 	static void Main(string[] args)
 	{
 		Console.WriteLine("Input s or c for server or client respectively.");
-		new PacketManager();
-		new PacketHandler();
+		User.db = new DataStore("reference");
 		string text = "";
 		do
 		{
@@ -13,11 +17,15 @@
 		switch (text)
 		{
 			case "s":
-				new UdpListener(8000).StartListening(true);
+				var s = new Server();
+				s.RegisterHooks();
+				s.Start(8000);
 				break;
 			case "c":
 				Console.Write("Enter IP address for connection: ");
-				new Client().Launch(Console.ReadLine());
+				var c = new ChatClient();
+				c.RegisterHooks();
+				c.StartChat(Console.ReadLine(), 8000);
 				break;
 			case "exit":
 				Environment.Exit(0);

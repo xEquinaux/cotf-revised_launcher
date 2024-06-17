@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Sockets;
+using System.Text;
 
 public class PacketManager
 {
@@ -47,37 +49,5 @@ public class PacketManager
         {
             throw new Exception("No packet handler found for this ID.");
         }
-    }
-
-    public static void SendPacket(Socket socket, Packet packet)
-    {
-        socket.Send(packet.GetBytes());
-    }
-
-    public Packet ReceivePacket(UdpClient socket)
-    {
-        byte[] buffer = new byte[1024];
-        int received = socket.Client.Receive(buffer, SocketFlags.None);
-
-        if (received == 0)
-        {
-            throw new SocketException((int)SocketError.ConnectionReset);
-        }
-
-        byte[] data = new byte[received];
-        Array.Copy(buffer, data, received);
-
-        Packet packet = new Packet();
-
-        packet.Id       = BitConverter.ToInt32(data, 0);
-        packet.ToWhom   = BitConverter.ToInt32(data, 4);
-        packet.FromWhom = BitConverter.ToInt32(data, 8);
-        
-        packet.Data = new byte[received - 12];
-        Array.Copy(data, 12, packet.Data, 0, received - 12);
-
-        HandleIncomingPacket(packet);
-
-        return packet;
     }
 }

@@ -6,42 +6,32 @@ using System.Threading;
 
 public class ChatClient
 {
-	private UdpClient _client;
-	private Socket	  _stream;
-
-	public ChatClient(string ip, int port)
+	public virtual void RegisterHooks()  
 	{
-		_client = new UdpClient(ip, port);
-		_stream = _client.Client;
+	}
+
+	public void StartChat(string ip, int port)
+	{
+		RegisterHooks();
+		UdpClient udpClient = new UdpClient();
+        udpClient.Connect(ip, 8000);
 		Console.WriteLine("Connected to server on " + ip + ":" + port);
-	}
-
-	public void StartChat()
-	{
-		Thread thread = new Thread(() => ReceiveMessages());
-		thread.Start();
-
+		
 		while (true)
 		{
-			string message = Console.ReadLine();
-			byte[] buffer = Encoding.UTF8.GetBytes(message);
-			_stream.Send(buffer, 0, buffer.Length, SocketFlags.None);
-		}
+			byte[] buffer = new byte[] { };
+			buffer = Packet.ConstructPacketData(1, Console.ReadLine());
+			udpClient.Send(buffer, buffer.Length);
+		
+			IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
+            Byte[] receiveBytes = udpClient.Receive(ref RemoteIpEndPoint);
+
+			Console.WriteLine("Received: " + new Packet(receiveBytes).GetMessage());
+        }
 	}
 
-	private void ReceiveMessages()
-	{
-		byte[] buffer = new byte[1024];
-		while (true)
-		{
-			int bytesRead = _stream.Receive(buffer, 0, buffer.Length, SocketFlags.None);
-			if (bytesRead == 0)
-			{
-				break;
-			}
-
-			string message = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-			Console.WriteLine("Received: " + message);
-		}
-	}
+	public static event GeneratePacket GeneratePacketEvent;
+	public static event ReturnOutput ReturnOutputEvent;
+	public delegate void ReturnOutput(Packet packet);
+	public delegate byte[] GeneratePacket(); 
 }
