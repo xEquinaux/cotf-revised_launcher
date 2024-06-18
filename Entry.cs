@@ -9,11 +9,15 @@ using System.Threading.Tasks;
 public struct Entry
 {
 	public IPEndPoint remoteEndpoint = default;
-	IList<Listing> list = new List<Listing>();
-	string fileName;
+	static IList<Listing> list = new List<Listing>();
+	static string fileName;
+	public Entry() { }
 	public Entry(string fileNameNoExt)
 	{
-		this.fileName = fileNameNoExt + ".db";
+		fileName = fileNameNoExt + ".db";
+	}
+	public static void Load()
+	{
 		LoadFromFile();
 	}
 	public int GetIndex(string header)
@@ -38,7 +42,7 @@ public struct Entry
 		}
 		return default;
 	}
-	void LoadFromFile()
+	static void LoadFromFile()
 	{
 		using (StreamReader sr = new StreamReader(fileName))
 		{
@@ -93,5 +97,13 @@ public struct Listing
 	public override string ToString()
 	{
 		return $"{whoAmI}_:_[{header}]_:_{key}_:_{value}";
+	}
+	public static bool operator ==(Listing a, Listing b)
+	{
+		return a.header == b.header;
+	}
+	public static bool operator !=(Listing a, Listing b)
+	{
+		return a.header != b.header;
 	}
 }

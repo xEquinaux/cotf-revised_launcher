@@ -20,12 +20,15 @@ public class ChatClient
 		while (true)
 		{
 			byte[] buffer = new byte[] { };
-			buffer = Packet.ConstructPacketData(1, Console.ReadLine());
+			buffer		  = Packet.ConstructPacketData((int)PacketId.Message, Console.ReadLine());
 			udpClient.Send(buffer, buffer.Length);
 		
+		//  | Based on packet being sent respond with that differently here; |
+		//  | Currently defautls to sending "Message" packet.				 |
+		//	v  																 v
 			IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
             Byte[] receiveBytes = udpClient.Receive(ref RemoteIpEndPoint);
-
+		//	DEBUG
 			Console.WriteLine("Received: " + new Packet(receiveBytes).GetMessage());
         }
 	}

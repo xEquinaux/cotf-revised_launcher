@@ -6,6 +6,7 @@ using System.Text;
 
 public class PacketManager
 {
+//  Advanced packet management currently supplied as a class for expansion
     public static PacketManager Instance { get; set; }
     private Dictionary<int, Action<Packet>> packetHandlers;
 
