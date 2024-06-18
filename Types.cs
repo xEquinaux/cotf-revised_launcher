@@ -8,5 +8,7 @@ public enum PacketId : int
 {
 	None = 0,
 	Message = 1,
-	PingEveryone = 10
+	PingEveryone = 10,
+	Login = 128,
+	Success = 220
 }

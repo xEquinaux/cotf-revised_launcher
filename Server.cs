@@ -5,7 +5,7 @@ using System.Text;
 
 public class Server
 {
-    private IList<User> _client = new List<User>();
+    private IList<Entry> _client = new List<Entry>();
 
     public virtual void RegisterHooks()
     {
@@ -31,22 +31,33 @@ public class Server
             string message = Encoding.ASCII.GetString(data);
 
             if (message.ToLower() == "exit") // admin commands?
-            { 
+            {
                 ExitEvent.Invoke();
                 break;
             }
+            
+            Packet packet = new Packet();
+            packet.Id       = BitConverter.ToInt32(data, 0);
 
-            if (_client.FirstOrDefault(t => t.remoteEndpoint == remoteEP) == default)
+            switch (packet.Id)
             {
-                User user = new User();
-                user.remoteEndpoint = remoteEP;
-                user.whoAmI
-                _client.Add(remoteEP);
+                case (int)PacketId.None:
+                case (int)PacketId.Success:
+                case (int)PacketId.PingEveryone:
+                case (int)PacketId.Message:
+                    break;
+                case (int)PacketId.Login:
+                    break;
+            }
+            if (_client.FirstOrDefault(t => t.remoteEndpoint == remoteEP) == default(Entry))
+            {
+                Entry entry = new Entry("dictionary");
+                entry   .remoteEndpoint = remoteEP;
+                entry   .AddEntry()
+                _client .Add(entry);
             }
 
-            Packet packet = new Packet();
 
-            packet.Id       = BitConverter.ToInt32(data, 0);
             packet.ToWhom   = BitConverter.ToInt32(data, 4);
             packet.FromWhom = _client.IndexOf(remoteEP);
             packet.Data     = data.Skip(12).ToArray(); 

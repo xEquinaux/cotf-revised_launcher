@@ -1,5 +1,4 @@
-﻿using CirclePrefect.Dotnet;
-using System.Net.Sockets;
+﻿using System.Net.Sockets;
 using System.Net;
 using System.Text;
 
@@ -8,7 +7,6 @@ public class Program
 	static void Main(string[] args)
 	{
 		Console.WriteLine("Input s or c for server or client respectively.");
-		User.db = new DataStore("reference");
 		string text = "";
 		do
 		{
