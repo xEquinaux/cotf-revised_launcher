@@ -19,22 +19,32 @@ public class ChatClient
 		
 		while (true)
 		{
-			byte[] buffer = new byte[] { };
-			buffer		  = Packet.ConstructPacketData((int)PacketId.Message, Console.ReadLine());
-			udpClient.Send(buffer, buffer.Length);
-		
-		//  | Based on packet being sent respond with that differently here; |
-		//  | Currently defautls to sending "Message" packet.				 |
-		//	v  																 v
-			IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
-            Byte[] receiveBytes = udpClient.Receive(ref RemoteIpEndPoint);
-		//	DEBUG
-			Console.WriteLine("Received: " + new Packet(receiveBytes).GetMessage());
-        }
+			SendEvent?.Invoke(udpClient);
+			HandleResponse(udpClient, true);
+			ReceiveEvent?.Invoke(udpClient);
+		}
 	}
-
+	public virtual void HandleResponse(UdpClient client, bool debug = false)
+	{
+		byte[] buffer = new byte[] { };
+		buffer		  = Packet.ConstructPacketData((int)PacketId.Message, Console.ReadLine());
+		client.Send(buffer, buffer.Length);
+		
+	//  | Based on packet being sent respond with that differently here; |
+	//  | Currently defautls to sending "Message" packet.				 |
+	//	v  																 v
+		IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
+        Byte[] receiveBytes = client.Receive(ref RemoteIpEndPoint);
+	//	DEBUG
+		if (debug)
+		Console.WriteLine("Received: " + new Packet(receiveBytes).GetMessage());
+	}
+	public static event Send SendEvent;
+	public static event Receive ReceiveEvent;
 	public static event GeneratePacket GeneratePacketEvent;
 	public static event ReturnOutput ReturnOutputEvent;
+	public delegate void Send(UdpClient client);
+	public delegate void Receive(UdpClient client);
 	public delegate void ReturnOutput(Packet packet);
 	public delegate byte[] GeneratePacket(); 
 }
