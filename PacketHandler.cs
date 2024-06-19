@@ -7,13 +7,16 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
-public class PacketHandler
-{
-	public PacketHandler()
+namespace NetworkMan
+{ 
+	class PacketHandler
 	{
-	}
+		PacketHandler()
+		{
+		}
 
-	public void Respond(Packet packet)
-    {
-    }
+		void Respond(Packet packet)
+		{ 
+		}
+	}
 }

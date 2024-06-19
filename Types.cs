@@ -4,11 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public enum PacketId : int
+namespace NetworkMan
 {
-	None = 0,
-	Message = 1,
-	PingEveryone = 10,
-	Login = 128,
-	Success = 220
+	public enum PacketId : int
+	{
+		None = 0,
+		Message = 1,
+		PingEveryone = 10,
+		Login = 128,
+		Success = 220
+	}
 }
