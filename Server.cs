@@ -7,7 +7,7 @@ namespace NetworkMan
 {
 	public class Server
 	{
-		private IList<Entry> _client = new List<Entry>();
+		public IList<Entry> _client = new List<Entry>();
 
 		public virtual void RegisterHooks()
 		{
@@ -17,32 +17,8 @@ namespace NetworkMan
 			return Packet.ConstructPacketData(1, packet.GetMessage());
 		}
 
-		public virtual void HandleMessage(Packet packet, Entry e, ref UdpClient udpServer)
+		public virtual void HandleMessage(Packet packet, Entry e, UdpClient udpServer)
 		{
-			//  Example packet management
-			switch (packet.Id)
-			{
-				case (int)PacketId.None:
-				case (int)PacketId.Success:
-				case (int)PacketId.PingEveryone:
-				case (int)PacketId.Message:
-					byte[] response = DefaultIntercept(packet);
-					foreach (var item in _client)
-					{
-						if (e != item)
-						{
-							udpServer.Send(response, response.Length, item.remoteEndpoint);
-						}
-					}
-					break;
-				case (int)PacketId.Login:
-					//  TODO: work login details into client
-					if (e.GetEntry("DEFAULT") != default)
-					{
-						e.AddEntry("DEFAULT", "DEFAULT", "DEFAULT");
-					}
-					break;
-			}
 		}
 
 		public void Start(int port)
@@ -70,18 +46,17 @@ namespace NetworkMan
 				}
 
 				Packet packet = new Packet();
-				if (data.Length >= 4)
 				packet.Id = BitConverter.ToInt32(data, 0);
-				if (data.Length >= 8)
+				if (data.Length > 4)
 				packet.ToWhom = BitConverter.ToInt32(data, 4);	 // <-- Server would be -1 for a global message, otherwise would be segmented
-				if (data.Length >= 12)
+				if (data.Length > 8)
 				packet.FromWhom = BitConverter.ToInt32(data, 8); // <-- Need to register whoAmI's to Entry objects, then get the index from the database
-				if (data.Length >= 13)
+				if (data.Length > 12)
 				packet.Data = data.Skip(12).ToArray();
 
 				InterceptDataEvent?.Invoke(packet, e);
 
-				HandleMessage(packet, e, ref udpServer);
+				HandleMessage(packet, e, udpServer);
 			}
 
 			udpServer.Close();

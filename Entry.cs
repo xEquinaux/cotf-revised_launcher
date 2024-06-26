@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Runtime.CompilerServices;
@@ -17,6 +18,10 @@ namespace NetworkMan
 		public Entry(string fileNameNoExt)
 		{
 			fileName = fileNameNoExt + ".db";
+			if (!Exists)
+			{
+				File.CreateText(fileName);
+			}
 		}
 		public static void Load()
 		{
@@ -27,11 +32,16 @@ namespace NetworkMan
 			return list.IndexOf(
 				   list.FirstOrDefault(t => t.header == header));
 		}
-		public void AddEntry(string header, string key, string value)
+		public Listing AddEntry(string header, string key, string value)
 		{
-			var l  = new Listing(header, key, value, list.Count + 1);
-			list   .Add(l);
-			WriteToFile(l);
+			if (list.FirstOrDefault(t => t.header == header) == default)
+			{
+				var l  = new Listing(header, key, value, list.Count + 1);
+				list   .Add(l);
+				WriteToFile(l);
+				return l;
+			}
+			return default;
 		}
 		public Listing GetEntry(string header)
 		{
@@ -44,8 +54,25 @@ namespace NetworkMan
 			}
 			return default;
 		}
-		static void LoadFromFile()
+		public Listing GetEntry(string header, int whoAmI)
 		{
+			for (int i = 0; i < list.Count; i++)
+			{
+				if (list[i].header == header && i == whoAmI)
+				{
+					return list[i];
+				}
+			}
+			return default;
+		}
+		static bool Exists => File.Exists(fileName);
+		static void LoadFromFile()
+		{		
+			if (!Exists)
+			{
+				var f = File.CreateText(fileName);
+				f.Close();
+			}
 			using (StreamReader sr = new StreamReader(fileName))
 			{
 				while (!sr.EndOfStream)

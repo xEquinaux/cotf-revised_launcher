@@ -36,14 +36,19 @@ namespace NetworkMan
 		}
 		public string GetMessage()
 		{
-			if (Data != null && Data.Length >= 13)
+			if (Data != null && Data.Length >= 1)
 			return Encoding.UTF8.GetString(Data);
 			else return string.Empty;
 		}
 
+		public byte[] MessageIntoBytes()
+		{
+			return Encoding.UTF8.GetBytes(GetMessage());
+		}
+
 		public static byte[] ConstructPacketData(int id, string message, int toWhom = 255, int fromWhom = 0)
 		{
-			byte[] _id = BitConverter.GetBytes(1);
+			byte[] _id = BitConverter.GetBytes(id);
 			if (message == null)
 			{
 				return _id;

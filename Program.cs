@@ -24,8 +24,7 @@ namespace NetworkMan
 				case "c":
 					Console.Write("Enter IP address for connection: ");
 					var c = new ChatClient();
-					c.RegisterHooks();
-					c.StartChat(Console.ReadLine(), 8000);
+					c.Init(Console.ReadLine(), 8000);
 					break;
 				case "exit":
 					Environment.Exit(0);
