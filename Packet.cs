@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
@@ -14,6 +15,7 @@ namespace NetworkMan
 		public Packet()
 		{
 		}
+
 		public Packet(byte[] data)
 		{
 			if (data.Length >= 4)
@@ -25,20 +27,27 @@ namespace NetworkMan
 			if (data.Length >= 13)
 			Data = data.Skip(12).ToArray();
 		}
+
 		public byte[] GetBytes()
 		{
 			byte[] buffer = new byte[] { };
 			buffer.Concat(BitConverter.GetBytes(Id))
-					 .Concat(BitConverter.GetBytes(ToWhom))
-					 .Concat(BitConverter.GetBytes(FromWhom))
-					 .Concat(Data);
+				  .Concat(BitConverter.GetBytes(ToWhom))
+				  .Concat(BitConverter.GetBytes(FromWhom))
+				  .Concat(Data);
 			return buffer;
 		}
+		
 		public string GetMessage()
 		{
 			if (Data != null && Data.Length >= 1)
 			return Encoding.UTF8.GetString(Data);
 			else return string.Empty;
+		}
+
+		public byte[] UsernameMessageBytes(Entry e)
+		{
+			return Encoding.UTF8.GetBytes(e.GetEntry(FromWhom).header + ": " + GetMessage());
 		}
 
 		public byte[] MessageIntoBytes()

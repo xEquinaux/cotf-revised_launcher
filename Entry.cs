@@ -54,6 +54,17 @@ namespace NetworkMan
 			}
 			return default;
 		}
+		public Listing GetEntry(int whoAmI)
+		{
+			for (int i = 0; i < list.Count; i++)
+			{
+				if (list[i].whoAmI == whoAmI)
+				{
+					return list[i];
+				}
+			}
+			return default;
+		}
 		public Listing GetEntry(string header, int whoAmI)
 		{
 			for (int i = 0; i < list.Count; i++)
