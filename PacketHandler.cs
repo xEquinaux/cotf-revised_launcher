@@ -9,7 +9,10 @@ using System.Threading.Tasks;
 
 namespace NetworkMan
 { 
-	class PacketHandler
+	/// <summary>
+	/// Unused.
+	/// </summary>
+	public partial class PacketHandler
 	{
 		PacketHandler()
 		{

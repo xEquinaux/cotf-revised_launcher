@@ -5,22 +5,52 @@ using System.Text;
 
 namespace NetworkMan
 {
+	/// <summary>
+	/// The networking management for the UDP-based server is located here, such as the HandleMessage hook and various events.
+	/// </summary>
 	public class Server
 	{
-		public IList<Entry> _client = new List<Entry>();
+		/// <summary>
+		/// Contains all unique entries that have connected. Override 'DontStoreEntries' to false in order to begun default entry-storing. Otherwise handle this is 'HandleMessage' hook.
+		/// </summary>
+		public IList<Entry> Client 
+		{
+			get => _client;
+			set => _client = value;
+		}
+		IList<Entry> _client = new List<Entry>();
 
+		/// <summary>
+		/// As you can imagine, this value manages default-entry storage in the 'Client' object. It defaults to true, as in 'Don't store.'
+		/// </summary>
+		public virtual bool DontStoreEntries => true;
+
+		/// <summary>
+		/// This is called before the Start(int port) method loop is begun.
+		/// </summary>
 		public virtual void RegisterHooks()
 		{
 		}
-		public byte[] DefaultIntercept(Packet packet)
+
+		byte[] DefaultIntercept(Packet packet)
 		{
 			return Packet.ConstructPacketData(1, packet.GetMessage());
 		}
 
+		/// <summary>
+		/// Override this to work with the incoming and outgoing data.
+		/// </summary>
+		/// <param name="packet">Data and the like.</param>
+		/// <param name="e">Contains data such as the IPEndPoint and various database-related variables.</param>
+		/// <param name="udpServer">The UdpClient that the connection is stemmed from.</param>
 		public virtual void HandleMessage(Packet packet, Entry e, UdpClient udpServer)
 		{
 		}
 
+		/// <summary>
+		/// This is basically the only method that needs to be run from a constructor to get it going. It simply begins the listening and connection management. Required.
+		/// </summary>
+		/// <param name="port">Port of whatever you want the internal UdpClient to be bound to. External clients will connect to this with their own UdpClients I suppose.</param>
 		public void Start(int port)
 		{
 			new Entry("register");
@@ -40,9 +70,12 @@ namespace NetworkMan
 				}
 				var e = new Entry();
 				e.remoteEndpoint = remoteEP;
-				if (!_client.Contains(e))
+				if (!DontStoreEntries)
 				{
-					_client.Add(e);
+					if (!_client.Contains(e))
+					{
+						_client.Add(e);
+					}
 				}
 
 				Packet packet = new Packet();

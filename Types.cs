@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace NetworkMan
 {
+	/// <summary>
+	/// Already stamped packet identities. Since the methods take an Int32, this is just for reference.
+	/// </summary>
 	public enum PacketId : int
 	{
 		None = 0,

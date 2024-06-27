@@ -18,7 +18,6 @@ namespace NetworkMan
 			{
 				case "s":
 					var s = new Server();
-					s.RegisterHooks();
 					s.Start(8000);
 					break;
 				case "c":
