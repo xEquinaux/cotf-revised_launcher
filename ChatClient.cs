@@ -24,5 +24,16 @@ namespace NetworkMan
 			Console.WriteLine("Connected to server on " + ip + ":" + port);
 			return udpClient;
 		}
+		/// <summary>
+		/// Listen for a "SUCCESS" message.
+		/// </summary>
+		/// <param name="u">The UdpClient to use.</param>
+		/// <param name="desiredResponse">The response you want to receive.</param>
+		/// <returns>Did it receive a proper message.</returns>
+		public static bool Retrieve(UdpClient u, string desiredResponse)
+		{
+			IPEndPoint end = new IPEndPoint(IPAddress.Any, 0);
+			return Encoding.UTF8.GetString(u.Receive(ref end), 0, desiredResponse.Length) == desiredResponse;
+		}
 	}
 }

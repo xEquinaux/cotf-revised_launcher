@@ -34,7 +34,7 @@ namespace NetworkMan
 
 		byte[] DefaultIntercept(Packet packet)
 		{
-			return Packet.ConstructPacketData(1, packet.GetMessage());
+			return Packet.ConstructPacketData(1, message: packet.GetMessage());
 		}
 
 		/// <summary>
